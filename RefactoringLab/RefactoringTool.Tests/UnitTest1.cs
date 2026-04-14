@@ -4,7 +4,7 @@ using RefactoringTool;
 public class RefactoringTests
 {
 // ===== RenameVariable =====
-
+ 
 [Fact]
 public void RenameVariable_SimpleCase()
 {
