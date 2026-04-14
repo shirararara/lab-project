@@ -31,4 +31,9 @@ public class RefactoringService
     {
         return false;
     }
+    
+    public string RenameVariable(string code, string oldName, string newName)
+    {
+        return code;
+    }
 }
