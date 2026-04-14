@@ -13,7 +13,7 @@ namespace RefactoringTool;
 
 public class RefactoringService
 {
-    // ===== Антон приймич =====
+    // ===== Антон Приймич =====
     public string RenameMethod(string code, string oldName, string newName)
     {
         return code.Replace(oldName, newName);
