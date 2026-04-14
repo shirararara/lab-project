@@ -1,4 +1,3 @@
-
 namespace RefactoringTool;
 
 public class RefactoringService
