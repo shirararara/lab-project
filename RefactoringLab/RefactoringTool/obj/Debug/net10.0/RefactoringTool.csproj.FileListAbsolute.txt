@@ -1,0 +1,11 @@
+/Users/flut22/vs_code/RefactoringLab/RefactoringTool/bin/Debug/net10.0/RefactoringTool.deps.json
+/Users/flut22/vs_code/RefactoringLab/RefactoringTool/bin/Debug/net10.0/RefactoringTool.dll
+/Users/flut22/vs_code/RefactoringLab/RefactoringTool/bin/Debug/net10.0/RefactoringTool.pdb
+/Users/flut22/vs_code/RefactoringLab/RefactoringTool/obj/Debug/net10.0/RefactoringTool.GeneratedMSBuildEditorConfig.editorconfig
+/Users/flut22/vs_code/RefactoringLab/RefactoringTool/obj/Debug/net10.0/RefactoringTool.AssemblyInfoInputs.cache
+/Users/flut22/vs_code/RefactoringLab/RefactoringTool/obj/Debug/net10.0/RefactoringTool.AssemblyInfo.cs
+/Users/flut22/vs_code/RefactoringLab/RefactoringTool/obj/Debug/net10.0/RefactoringTool.csproj.CoreCompileInputs.cache
+/Users/flut22/vs_code/RefactoringLab/RefactoringTool/obj/Debug/net10.0/RefactoringTool.dll
+/Users/flut22/vs_code/RefactoringLab/RefactoringTool/obj/Debug/net10.0/refint/RefactoringTool.dll
+/Users/flut22/vs_code/RefactoringLab/RefactoringTool/obj/Debug/net10.0/RefactoringTool.pdb
+/Users/flut22/vs_code/RefactoringLab/RefactoringTool/obj/Debug/net10.0/ref/RefactoringTool.dll
