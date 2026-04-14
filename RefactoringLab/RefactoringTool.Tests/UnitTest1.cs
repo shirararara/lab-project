@@ -1,176 +1,102 @@
 using Xunit;
 using RefactoringTool;
 
-public class RefactoringTests
+public class RefactoringServiceTests
 {
-    private readonly RefactoringService _refactoring = new RefactoringService();
+    private readonly RefactoringService _service = new();
 
-    // ===== RenameMethod =====
-
+    // 1. Базова заміна числа на константу
     [Fact]
-    public void RenameMethod_SimpleCase()
+    public void ReplaceMagicNumber_AddsConstantAndReplacesNumber()
     {
-        string code = "void foo() {}";
-        var result = _refactoring.RenameMethod(code, "foo", "bar");
-        Assert.Equal("void bar() {}", result);
+        string code = "if (x > 42) return 42;";
+        string result = _service.ReplaceMagicNumber(code, "42", "MAX_SIZE");
+        Assert.Contains("const int MAX_SIZE = 42;", result);
+        Assert.Contains("MAX_SIZE", result);
+        Assert.DoesNotContain("42", result);
     }
 
+    // 2. Порожній код
     [Fact]
-    public void RenameMethod_WithParameters()
+    public void ReplaceMagicNumber_EmptyCode()
     {
-        string code = "int sum(int a, int b) { return a + b; }";
-        var result = _refactoring.RenameMethod(code, "sum", "add");
-        Assert.Equal("int add(int a, int b) { return a + b; }", result);
+        string result = _service.ReplaceMagicNumber("", "42", "MAX_SIZE");
+        Assert.Equal("const int MAX_SIZE = 42;\n", result);
     }
 
+    // 3. Числа немає в коді
     [Fact]
-    public void RenameMethod_MultipleCalls()
+    public void ReplaceMagicNumber_NumberNotInCode()
     {
-        string code = "foo(); foo();";
-        var result = _refactoring.RenameMethod(code, "foo", "bar");
-        Assert.Equal("bar(); bar();", result);
+        string code = "int x = 10;";
+        string result = _service.ReplaceMagicNumber(code, "42", "MAX_SIZE");
+        Assert.Equal("const int MAX_SIZE = 42;\nint x = 10;", result);
     }
 
+    // 4. Число зустрічається кілька разів
     [Fact]
-    public void RenameMethod_InsideClass()
+    public void ReplaceMagicNumber_ReplacesAllOccurrences()
     {
-        string code = "class A { void foo() {} }";
-        var result = _refactoring.RenameMethod(code, "foo", "bar");
-        Assert.Equal("class A { void bar() {} }", result);
+        string code = "int a = 100; int b = 100; int c = 100;";
+        string result = _service.ReplaceMagicNumber(code, "100", "LIMIT");
+        Assert.DoesNotContain("100", result);
+        Assert.Equal(3, result.Split("LIMIT").Length - 1 - 1);
     }
 
+    // 5. Константа додається на початок файлу
     [Fact]
-    public void RenameMethod_WithReturnType()
+    public void ReplaceMagicNumber_ConstantIsAtTheTop()
     {
-        string code = "int foo() { return 1; }";
-        var result = _refactoring.RenameMethod(code, "foo", "bar");
-        Assert.Equal("int bar() { return 1; }", result);
+        string code = "int x = 99;";
+        string result = _service.ReplaceMagicNumber(code, "99", "MAX_VAL");
+        Assert.StartsWith("const int MAX_VAL = 99;", result);
     }
 
+    // 6. Інше число та інша назва константи
     [Fact]
-    public void RenameMethod_MethodCallWithArguments()
+    public void ReplaceMagicNumber_DifferentNumberAndName()
     {
-        string code = "foo(5, 10);";
-        var result = _refactoring.RenameMethod(code, "foo", "bar");
-        Assert.Equal("bar(5, 10);", result);
+        string code = "for (int i = 0; i < 255; i++)";
+        string result = _service.ReplaceMagicNumber(code, "255", "MAX_BYTE");
+        Assert.Contains("const int MAX_BYTE = 255;", result);
+        Assert.Contains("MAX_BYTE", result);
+        Assert.DoesNotContain("255", result);
     }
 
+    // 7. Код з кількома рядками
     [Fact]
-    public void RenameMethod_MethodInExpression()
+    public void ReplaceMagicNumber_MultilineCode()
     {
-        string code = "int x = foo() + 5;";
-        var result = _refactoring.RenameMethod(code, "foo", "bar");
-        Assert.Equal("int x = bar() + 5;", result);
+        string code = "int a = 10;\nint b = 10;\nreturn 10;";
+        string result = _service.ReplaceMagicNumber(code, "10", "TEN");
+        Assert.Contains("const int TEN = 10;", result);
+        Assert.DoesNotContain("= 10", result);
     }
 
+    // 8. Між константою та кодом є перенос рядка
     [Fact]
-    public void RenameMethod_NestedCalls()
+    public void ReplaceMagicNumber_HasNewlineBetweenConstantAndCode()
     {
-        string code = "foo(foo());";
-        var result = _refactoring.RenameMethod(code, "foo", "bar");
-        Assert.Equal("bar(bar());", result);
+        string code = "int x = 5;";
+        string result = _service.ReplaceMagicNumber(code, "5", "FIVE");
+        Assert.Contains("\n", result);
     }
 
+    // 9. Назва константи присутня в результаті
     [Fact]
-    public void RenameMethod_MultipleLines()
+    public void ReplaceMagicNumber_ResultContainsConstantName()
     {
-        string code = "foo();\nfoo();";
-        var result = _refactoring.RenameMethod(code, "foo", "bar");
-        Assert.Equal("bar();\nbar();", result);
+        string code = "int timeout = 30;";
+        string result = _service.ReplaceMagicNumber(code, "30", "TIMEOUT_SECONDS");
+        Assert.Contains("TIMEOUT_SECONDS", result);
     }
 
+    // 10. Оголошення константи має правильний формат
     [Fact]
-    public void RenameMethod_RenameToLongerName()
+    public void ReplaceMagicNumber_ConstantHasCorrectFormat()
     {
-        string code = "void foo() { foo(); }";
-        var result = _refactoring.RenameMethod(code, "foo", "myMethod");
-        Assert.Equal("void myMethod() { myMethod(); }", result);
-    }
-
-    // ===== MethodExists =====
-
-    [Fact]
-    public void MethodExists_WhenMethodPresent_ReturnsTrue()
-    {
-        string code = "void Calculate() { }";
-        bool result = _refactoring.MethodExists(code, "Calculate");
-        Assert.True(result);
-    }
-
-    [Fact]
-    public void MethodExists_WhenMethodAbsent_ReturnsFalse()
-    {
-        string code = "void Calculate() { }";
-        bool result = _refactoring.MethodExists(code, "Print");
-        Assert.False(result);
-    }
-
-    [Fact]
-    public void MethodExists_WhenSourceCodeEmpty_ReturnsFalse()
-    {
-        bool result = _refactoring.MethodExists("", "Calculate");
-        Assert.False(result);
-    }
-
-    // ===== AddParameter =====
-
-    [Fact]
-    public void AddParameter_MethodSignatureIsCorrect()
-    {
-        string code = "void Print() { }";
-        string result = _refactoring.AddParameter(code, "Print", "string", "message");
-        Assert.Contains("void Print(string message)", result);
-    }
-
-    [Fact]
-    public void AddParameter_AddsParameterToMethod()
-    {
-        string code = "void Calculate() { }";
-        string result = _refactoring.AddParameter(code, "Calculate", "int", "value");
-        Assert.Contains("int value", result);
-    }
-
-    [Fact]
-    public void AddParameter_MethodAlreadyHasParams_AddsNewParam()
-    {
-        string code = "void Calculate(int x) { }";
-        string result = _refactoring.AddParameter(code, "Calculate", "int", "y");
-        Assert.Contains("int y", result);
-    }
-
-    // ===== UpdateMethodCalls =====
-
-    [Fact]
-    public void UpdateMethodCalls_AddsDefaultArgument()
-    {
-        string code = "void foo(){} void bar(){ foo(); }";
-        string result = _refactoring.UpdateMethodCalls(code, "foo", "0");
-        Assert.Contains("foo(0)", result);
-    }
-
-    // ===== HasParameter =====
-
-    [Fact]
-    public void HasParameter_WhenParameterExists_ReturnsTrue()
-    {
-        string code = "void Calculate(int value) { }";
-        bool result = _refactoring.HasParameter(code, "Calculate", "value");
-        Assert.True(result);
-    }
-
-    // ===== IsValidParameterName =====
-
-    [Fact]
-    public void IsValidParameterName_ValidName_ReturnsTrue()
-    {
-        bool result = _refactoring.IsValidParameterName("myParam");
-        Assert.True(result);
-    }
-
-    [Fact]
-    public void IsValidParameterName_StartsWithDigit_ReturnsFalse()
-    {
-        bool result = _refactoring.IsValidParameterName("1param");
-        Assert.False(result);
+        string code = "int x = 7;";
+        string result = _service.ReplaceMagicNumber(code, "7", "DAYS_IN_WEEK");
+        Assert.StartsWith("const int DAYS_IN_WEEK = 7;", result);
     }
 }
