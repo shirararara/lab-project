@@ -22,4 +22,4 @@
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Pkgxunit_analyzers Condition=" '$(Pkgxunit_analyzers)' == '' ">/Users/flut22/.nuget/packages/xunit.analyzers/1.18.0</Pkgxunit_analyzers>
   </PropertyGroup>
-</Project>
+</Project> 
