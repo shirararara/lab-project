@@ -12,4 +12,4 @@
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <SourceRoot Include="/Users/flut22/.nuget/packages/" />
   </ItemGroup>
-</Project>
+</Project> 
