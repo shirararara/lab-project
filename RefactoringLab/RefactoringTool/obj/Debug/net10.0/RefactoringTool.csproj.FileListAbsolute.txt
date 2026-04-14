@@ -9,3 +9,4 @@
 /Users/flut22/vs_code/RefactoringLab/RefactoringTool/obj/Debug/net10.0/refint/RefactoringTool.dll
 /Users/flut22/vs_code/RefactoringLab/RefactoringTool/obj/Debug/net10.0/RefactoringTool.pdb
 /Users/flut22/vs_code/RefactoringLab/RefactoringTool/obj/Debug/net10.0/ref/RefactoringTool.dll
+ 
