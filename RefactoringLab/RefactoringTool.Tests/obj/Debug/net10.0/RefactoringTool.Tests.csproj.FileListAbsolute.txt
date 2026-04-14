@@ -97,3 +97,4 @@
 /Users/flut22/vs_code/RefactoringLab/RefactoringTool.Tests/obj/Debug/net10.0/RefactoringTool.Tests.pdb
 /Users/flut22/vs_code/RefactoringLab/RefactoringTool.Tests/obj/Debug/net10.0/RefactoringTool.Tests.genruntimeconfig.cache
 /Users/flut22/vs_code/RefactoringLab/RefactoringTool.Tests/obj/Debug/net10.0/ref/RefactoringTool.Tests.dll
+ 
