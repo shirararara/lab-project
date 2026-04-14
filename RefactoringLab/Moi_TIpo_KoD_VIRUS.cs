@@ -1,6 +1,6 @@
 ﻿using Xunit;
 using RefactoringTool;
-
+ 
 public class RefactoringService
 {
     private readonly RefactoringService _service = new();
