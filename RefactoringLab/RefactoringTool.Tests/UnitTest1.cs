@@ -5,8 +5,11 @@ public class RefactoringTests
 {
     private readonly RefactoringService _refactoring = new RefactoringService();
 
-    // ===== RenameMethod =====
-
+    // =========================================================
+    // ВАРІАНТ 8 — Перейменування методу
+    // =========================================================
+    
+    //1
     [Fact]
     public void RenameMethod_SimpleCase()
     {
@@ -14,7 +17,7 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("void bar() {}", result);
     }
-
+    //2
     [Fact]
     public void RenameMethod_WithParameters()
     {
@@ -22,7 +25,7 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "sum", "add");
         Assert.Equal("int add(int a, int b) { return a + b; }", result);
     }
-
+    //3
     [Fact]
     public void RenameMethod_MultipleCalls()
     {
@@ -30,7 +33,7 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("bar(); bar();", result);
     }
-
+    //4
     [Fact]
     public void RenameMethod_InsideClass()
     {
@@ -38,7 +41,7 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("class A { void bar() {} }", result);
     }
-
+    //5
     [Fact]
     public void RenameMethod_WithReturnType()
     {
@@ -46,7 +49,7 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("int bar() { return 1; }", result);
     }
-
+    //6
     [Fact]
     public void RenameMethod_MethodCallWithArguments()
     {
@@ -54,7 +57,7 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("bar(5, 10);", result);
     }
-
+    //7
     [Fact]
     public void RenameMethod_MethodInExpression()
     {
@@ -62,7 +65,7 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("int x = bar() + 5;", result);
     }
-
+    //8
     [Fact]
     public void RenameMethod_NestedCalls()
     {
@@ -70,7 +73,7 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("bar(bar());", result);
     }
-
+    //9
     [Fact]
     public void RenameMethod_MultipleLines()
     {
@@ -78,7 +81,7 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("bar();\nbar();", result);
     }
-
+    //10
     [Fact]
     public void RenameMethod_RenameToLongerName()
     {
@@ -87,8 +90,11 @@ public class RefactoringTests
         Assert.Equal("void myMethod() { myMethod(); }", result);
     }
 
-    // ===== MethodExists =====
+    // =========================================================
+    // ВАРІАНТ 9 — Додавання параметра
+    // =========================================================
 
+    //1
     [Fact]
     public void MethodExists_WhenMethodPresent_ReturnsTrue()
     {
@@ -96,7 +102,7 @@ public class RefactoringTests
         bool result = _refactoring.MethodExists(code, "Calculate");
         Assert.True(result);
     }
-
+    //2
     [Fact]
     public void MethodExists_WhenMethodAbsent_ReturnsFalse()
     {
@@ -104,16 +110,14 @@ public class RefactoringTests
         bool result = _refactoring.MethodExists(code, "Print");
         Assert.False(result);
     }
-
+    //3
     [Fact]
     public void MethodExists_WhenSourceCodeEmpty_ReturnsFalse()
     {
         bool result = _refactoring.MethodExists("", "Calculate");
         Assert.False(result);
     }
-
-    // ===== AddParameter =====
-
+    //4
     [Fact]
     public void AddParameter_MethodSignatureIsCorrect()
     {
@@ -121,7 +125,7 @@ public class RefactoringTests
         string result = _refactoring.AddParameter(code, "Print", "string", "message");
         Assert.Contains("void Print(string message)", result);
     }
-
+    //5
     [Fact]
     public void AddParameter_AddsParameterToMethod()
     {
@@ -129,7 +133,7 @@ public class RefactoringTests
         string result = _refactoring.AddParameter(code, "Calculate", "int", "value");
         Assert.Contains("int value", result);
     }
-
+    //6
     [Fact]
     public void AddParameter_MethodAlreadyHasParams_AddsNewParam()
     {
@@ -138,8 +142,7 @@ public class RefactoringTests
         Assert.Contains("int y", result);
     }
 
-    // ===== UpdateMethodCalls =====
-
+    //7
     [Fact]
     public void UpdateMethodCalls_AddsDefaultArgument()
     {
@@ -148,8 +151,7 @@ public class RefactoringTests
         Assert.Contains("foo(0)", result);
     }
 
-    // ===== HasParameter =====
-
+    //8
     [Fact]
     public void HasParameter_WhenParameterExists_ReturnsTrue()
     {
@@ -158,8 +160,7 @@ public class RefactoringTests
         Assert.True(result);
     }
 
-    // ===== IsValidParameterName =====
-
+    //9
     [Fact]
     public void IsValidParameterName_ValidName_ReturnsTrue()
     {
@@ -167,94 +168,111 @@ public class RefactoringTests
         Assert.True(result);
     }
 
+    //10
     [Fact]
     public void IsValidParameterName_StartsWithDigit_ReturnsFalse()
     {
         bool result = _refactoring.IsValidParameterName("1param");
         Assert.False(result);
     }
-    // ===== RenameVariable =====
 
-[Fact]
-public void RenameVariable_SimpleCase()
-{
-    string code = "int foo = 5;";
-    var result = _refactoring.RenameVariable(code, "foo", "bar");
-    Assert.Equal("int bar = 5;", result);
-}
+    // =========================================================
+    // ВАРІАНТ 1 — Перейменування змінної
+    // =========================================================
 
-[Fact]
-public void RenameVariable_UsedInExpression()
-{
-    string code = "int x = foo + 5;";
-    var result = _refactoring.RenameVariable(code, "foo", "bar");
-    Assert.Equal("int x = bar + 5;", result);
-}
+    //1
+    [Fact]
+    public void RenameVariable_SimpleCase()
+    {    
+        string code = "int foo = 5;";
+        var result = _refactoring.RenameVariable(code, "foo", "bar");
+        Assert.Equal("int bar = 5;", result);
+    }
 
-[Fact]
-public void RenameVariable_MultipleTimes()
-{
-    string code = "foo = 1; foo = 2;";
-    var result = _refactoring.RenameVariable(code, "foo", "bar");
-    Assert.Equal("bar = 1; bar = 2;", result);
-}
+    //2
+    [Fact]
+    public void RenameVariable_UsedInExpression()
+    {
+        string code = "int x = foo + 5;";
+        var result = _refactoring.RenameVariable(code, "foo", "bar");
+        Assert.Equal("int x = bar + 5;", result);
+    }
 
-[Fact]
-public void RenameVariable_InsideMethod()
-{
-    string code = "void Test() { int foo = 0; foo++; }";
-    var result = _refactoring.RenameVariable(code, "foo", "bar");
-    Assert.Equal("void Test() { int bar = 0; bar++; }", result);
-}
+    //3
+    [Fact]
+    public void RenameVariable_MultipleTimes()
+    {
+        string code = "foo = 1; foo = 2;";
+        var result = _refactoring.RenameVariable(code, "foo", "bar");
+        Assert.Equal("bar = 1; bar = 2;", result);
+    }
 
-[Fact]
-public void RenameVariable_NoMatch()
-{
-    string code = "int x = 5;";
-    var result = _refactoring.RenameVariable(code, "foo", "bar");
-    Assert.Equal("int x = 5;", result);
-}
+    //4
+    [Fact]
+    public void RenameVariable_InsideMethod()
+    {
+        string code = "void Test() { int foo = 0; foo++; }";
+        var result = _refactoring.RenameVariable(code, "foo", "bar");
+        Assert.Equal("void Test() { int bar = 0; bar++; }", result);
+    }
 
-[Fact]
-public void RenameVariable_PartialMatchShouldNotChange()
-{
-    string code = "int fooBar = 5;";
-    var result = _refactoring.RenameVariable(code, "foo", "bar");
-    Assert.Equal("int fooBar = 5;", result);
-}
+    //5
+    [Fact]
+    public void RenameVariable_NoMatch()
+    {
+        string code = "int x = 5;";
+        var result = _refactoring.RenameVariable(code, "foo", "bar");
+        Assert.Equal("int x = 5;", result);
+    }
 
-[Fact]
-public void RenameVariable_UsedAsArgument()
-{
-    string code = "Print(foo);";
-    var result = _refactoring.RenameVariable(code, "foo", "bar");
-    Assert.Equal("Print(bar);", result);
-}
+    //6
+    [Fact]
+    public void RenameVariable_PartialMatchShouldNotChange()
+    {
+        string code = "int fooBar = 5;";
+        var result = _refactoring.RenameVariable(code, "foo", "bar");
+        Assert.Equal("int fooBar = 5;", result);
+    }
 
-[Fact]
-public void RenameVariable_MultipleLines()
-{
-    string code = "int foo = 0;\nfoo = foo + 1;";
-    var result = _refactoring.RenameVariable(code, "foo", "bar");
-    Assert.Equal("int bar = 0;\nbar = bar + 1;", result);
-}
+    //7
+    [Fact]
+    public void RenameVariable_UsedAsArgument()
+    {
+        string code = "Print(foo);";
+        var result = _refactoring.RenameVariable(code, "foo", "bar");
+        Assert.Equal("Print(bar);", result);
+    }
 
-[Fact]
-public void RenameVariable_RenameToLongerName()
-{
-    string code = "int x = 5; int y = x + 1;";
-    var result = _refactoring.RenameVariable(code, "x", "myVar");
-    Assert.Equal("int myVar = 5; int y = myVar + 1;", result);
-}
+    //8
+    [Fact]
+    public void RenameVariable_MultipleLines()
+    {
+        string code = "int foo = 0;\nfoo = foo + 1;";
+        var result = _refactoring.RenameVariable(code, "foo", "bar");
+        Assert.Equal("int bar = 0;\nbar = bar + 1;", result);
+    }
 
-[Fact]
-public void RenameVariable_InsideIfCondition()
-{
-    string code = "if (foo > 0) { foo = 0; }";
-    var result = _refactoring.RenameVariable(code, "foo", "bar");
-    Assert.Equal("if (bar > 0) { bar = 0; }", result);
-}
-   // 1. Базова заміна числа на константу
+    //9
+    [Fact]
+    public void RenameVariable_RenameToLongerName()
+    {
+        string code = "int x = 5; int y = x + 1;";
+        var result = _refactoring.RenameVariable(code, "x", "myVar");
+        Assert.Equal("int myVar = 5; int y = myVar + 1;", result);
+    }
+
+    //10
+    [Fact]
+    public void RenameVariable_InsideIfCondition()
+    {
+        string code = "if (foo > 0) { foo = 0; }";
+        var result = _refactoring.RenameVariable(code, "foo", "bar");
+        Assert.Equal("if (bar > 0) { bar = 0; }", result);
+    }
+    // =========================================================
+    // ВАРІАНТ 2 — Заміна магічного числа символічною константою
+    // =========================================================
+    // 1. Базова заміна числа на константу
     [Fact]
     public void ReplaceMagicNumber_AddsConstantAndReplacesNumber()
     {
