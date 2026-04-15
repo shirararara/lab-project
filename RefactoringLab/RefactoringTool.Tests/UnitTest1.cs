@@ -5,11 +5,11 @@ public class RefactoringTests
 {
     private readonly RefactoringService _refactoring = new RefactoringService();
 
+ // =========================================================
+    // ВАРІАНТ 8 — Перейменування методу (Rename Method)
     // =========================================================
-    // ВАРІАНТ 8 — Перейменування методу
-    // =========================================================
-    
-    //1
+
+    // 1. Перевірка базового сценарію: заміна назви простого порожнього методу
     [Fact]
     public void RenameMethod_SimpleCase()
     {
@@ -17,7 +17,8 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("void bar() {}", result);
     }
-    //2
+
+    // 2. Перевірка збереження параметрів у дужках при зміні назви методу
     [Fact]
     public void RenameMethod_WithParameters()
     {
@@ -25,7 +26,8 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "sum", "add");
         Assert.Equal("int add(int a, int b) { return a + b; }", result);
     }
-    //3
+
+    // 3. Перевірка заміни всіх входжень, якщо метод викликається кілька разів у рядку
     [Fact]
     public void RenameMethod_MultipleCalls()
     {
@@ -33,7 +35,8 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("bar(); bar();", result);
     }
-    //4
+
+    // 4. Перевірка роботи рефакторингу всередині структури класу
     [Fact]
     public void RenameMethod_InsideClass()
     {
@@ -41,7 +44,8 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("class A { void bar() {} }", result);
     }
-    //5
+
+    // 5. Перевірка того, що тип повернення методу (напр. int) залишається незмінним
     [Fact]
     public void RenameMethod_WithReturnType()
     {
@@ -49,7 +53,8 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("int bar() { return 1; }", result);
     }
-    //6
+
+    // 6. Перевірка коректності заміни назви у викликах з реальними аргументами
     [Fact]
     public void RenameMethod_MethodCallWithArguments()
     {
@@ -57,7 +62,8 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("bar(5, 10);", result);
     }
-    //7
+
+    // 7. Перевірка заміни назви методу, коли він є частиною математичного виразу
     [Fact]
     public void RenameMethod_MethodInExpression()
     {
@@ -65,7 +71,8 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("int x = bar() + 5;", result);
     }
-    //8
+
+    // 8. Перевірка складних випадків: вкладені виклики методу в самого себе (foo(foo()))
     [Fact]
     public void RenameMethod_NestedCalls()
     {
@@ -73,7 +80,8 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("bar(bar());", result);
     }
-    //9
+
+    // 9. Перевірка коректної обробки багаторядкового коду з переносами \n
     [Fact]
     public void RenameMethod_MultipleLines()
     {
@@ -81,7 +89,8 @@ public class RefactoringTests
         var result = _refactoring.RenameMethod(code, "foo", "bar");
         Assert.Equal("bar();\nbar();", result);
     }
-    //10
+
+    // 10. Перевірка стабільності при рекурсії та заміні імені на значно довше
     [Fact]
     public void RenameMethod_RenameToLongerName()
     {
@@ -90,11 +99,11 @@ public class RefactoringTests
         Assert.Equal("void myMethod() { myMethod(); }", result);
     }
 
-    // =========================================================
-    // ВАРІАНТ 9 — Додавання параметра
+   // =========================================================
+    // ВАРІАНТ 9 — Додавання параметра (Add Parameter)
     // =========================================================
 
-    //1
+    // 1. Перевірка позитивного сценарію: метод існує в коді
     [Fact]
     public void MethodExists_WhenMethodPresent_ReturnsTrue()
     {
@@ -102,7 +111,8 @@ public class RefactoringTests
         bool result = _refactoring.MethodExists(code, "Calculate");
         Assert.True(result);
     }
-    //2
+
+    // 2. Перевірка негативного сценарію: пошук методу, якого немає в коді
     [Fact]
     public void MethodExists_WhenMethodAbsent_ReturnsFalse()
     {
@@ -110,14 +120,16 @@ public class RefactoringTests
         bool result = _refactoring.MethodExists(code, "Print");
         Assert.False(result);
     }
-    //3
+
+    // 3. Перевірка стійкості до порожнього вхідного тексту
     [Fact]
     public void MethodExists_WhenSourceCodeEmpty_ReturnsFalse()
     {
         bool result = _refactoring.MethodExists("", "Calculate");
         Assert.False(result);
     }
-    //4
+
+    // 4. Перевірка правильності формування нового підпису (сигнатури) методу
     [Fact]
     public void AddParameter_MethodSignatureIsCorrect()
     {
@@ -125,7 +137,8 @@ public class RefactoringTests
         string result = _refactoring.AddParameter(code, "Print", "string", "message");
         Assert.Contains("void Print(string message)", result);
     }
-    //5
+
+    // 5. Перевірка факту додавання типу та назви параметра в дужки методу
     [Fact]
     public void AddParameter_AddsParameterToMethod()
     {
@@ -133,7 +146,8 @@ public class RefactoringTests
         string result = _refactoring.AddParameter(code, "Calculate", "int", "value");
         Assert.Contains("int value", result);
     }
-    //6
+
+    // 6. Перевірка додавання нового параметра до вже існуючого списку параметрів (через кому)
     [Fact]
     public void AddParameter_MethodAlreadyHasParams_AddsNewParam()
     {
@@ -142,7 +156,7 @@ public class RefactoringTests
         Assert.Contains("int y", result);
     }
 
-    //7
+    // 7. Перевірка оновлення викликів методу: додавання аргументу за замовчуванням
     [Fact]
     public void UpdateMethodCalls_AddsDefaultArgument()
     {
@@ -151,7 +165,7 @@ public class RefactoringTests
         Assert.Contains("foo(0)", result);
     }
 
-    //8
+    // 8. Перевірка пошуку конкретного параметра за назвою у сигнатурі методу
     [Fact]
     public void HasParameter_WhenParameterExists_ReturnsTrue()
     {
@@ -160,7 +174,7 @@ public class RefactoringTests
         Assert.True(result);
     }
 
-    //9
+    // 9. Валідація назви: перевірка, що стандартна назва змінної вважається коректною
     [Fact]
     public void IsValidParameterName_ValidName_ReturnsTrue()
     {
@@ -168,7 +182,7 @@ public class RefactoringTests
         Assert.True(result);
     }
 
-    //10
+    // 10. Валідація назви: перевірка заборони назв, що починаються з цифри (правила C#)
     [Fact]
     public void IsValidParameterName_StartsWithDigit_ReturnsFalse()
     {
@@ -176,11 +190,11 @@ public class RefactoringTests
         Assert.False(result);
     }
 
-    // =========================================================
-    // ВАРІАНТ 1 — Перейменування змінної
+   // =========================================================
+    // ВАРІАНТ 1 — Перейменування змінної (Rename Variable)
     // =========================================================
 
-    //1
+    // 1. Базовий сценарій: перейменування змінної при її оголошенні та ініціалізації
     [Fact]
     public void RenameVariable_SimpleCase()
     {    
@@ -189,7 +203,7 @@ public class RefactoringTests
         Assert.Equal("int bar = 5;", result);
     }
 
-    //2
+    // 2. Перевірка заміни назви змінної, коли вона використовується всередині математичного виразу
     [Fact]
     public void RenameVariable_UsedInExpression()
     {
@@ -198,7 +212,7 @@ public class RefactoringTests
         Assert.Equal("int x = bar + 5;", result);
     }
 
-    //3
+    // 3. Перевірка того, що всі входження змінної в рядку будуть замінені
     [Fact]
     public void RenameVariable_MultipleTimes()
     {
@@ -207,7 +221,7 @@ public class RefactoringTests
         Assert.Equal("bar = 1; bar = 2;", result);
     }
 
-    //4
+    // 4. Перевірка коректності рефакторингу локальної змінної всередині тіла методу
     [Fact]
     public void RenameVariable_InsideMethod()
     {
@@ -216,7 +230,7 @@ public class RefactoringTests
         Assert.Equal("void Test() { int bar = 0; bar++; }", result);
     }
 
-    //5
+    // 5. Перевірка стабільності: якщо змінної з такою назвою немає, код не повинен змінитися
     [Fact]
     public void RenameVariable_NoMatch()
     {
@@ -225,7 +239,7 @@ public class RefactoringTests
         Assert.Equal("int x = 5;", result);
     }
 
-    //6
+    // 6. Критична перевірка: назва не повинна змінюватися, якщо вона є лише частиною іншого слова (напр. fooBar)
     [Fact]
     public void RenameVariable_PartialMatchShouldNotChange()
     {
@@ -234,7 +248,7 @@ public class RefactoringTests
         Assert.Equal("int fooBar = 5;", result);
     }
 
-    //7
+    // 7. Перевірка заміни назви змінної, коли вона передається як аргумент у виклик методу
     [Fact]
     public void RenameVariable_UsedAsArgument()
     {
@@ -243,7 +257,7 @@ public class RefactoringTests
         Assert.Equal("Print(bar);", result);
     }
 
-    //8
+    // 8. Перевірка коректної обробки багаторядкового коду (заміна на різних рядках)
     [Fact]
     public void RenameVariable_MultipleLines()
     {
@@ -252,7 +266,7 @@ public class RefactoringTests
         Assert.Equal("int bar = 0;\nbar = bar + 1;", result);
     }
 
-    //9
+    // 9. Перевірка заміни ідентифікатора на довшу назву (збереження цілісності виразів)
     [Fact]
     public void RenameVariable_RenameToLongerName()
     {
@@ -261,7 +275,7 @@ public class RefactoringTests
         Assert.Equal("int myVar = 5; int y = myVar + 1;", result);
     }
 
-    //10
+    // 10. Перевірка заміни змінної, що використовується в умові оператора if
     [Fact]
     public void RenameVariable_InsideIfCondition()
     {
