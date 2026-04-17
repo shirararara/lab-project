@@ -119,7 +119,7 @@ public class RefactoringTests
         string code = "void Calculate() { }";
         bool result = _refactoring.MethodExists(code, "Print");
         // Заглушка возвращает False. Ожидаем True, чтобы тест упал.
-        Assert.True(result, "Тест провален специально: нет реализации MethodExists");
+        Assert.True(result,"");
     }
 
     // 3. Перевірка стійкості до порожнього вхідного тексту
@@ -128,7 +128,7 @@ public class RefactoringTests
     {
         bool result = _refactoring.MethodExists("", "Calculate");
         // Заглушка возвращает False. Ожидаем True, чтобы тест упал.
-        Assert.True(result, "Тест провален специально: нет реализации MethodExists для пустой строки");
+        Assert.True(result, "");
     }
 
     // 4. Перевірка правильності формування нового підпису (сигнатури) методу
@@ -190,7 +190,7 @@ public class RefactoringTests
     {
         bool result = _refactoring.IsValidParameterName("1param");
         // Заглушка возвращает False. Ожидаем True, чтобы тест упал.
-        Assert.True(result, "Тест провален специально: нет реализации IsValidParameterName");
+        Assert.True(result, "");
     }
 
    // =========================================================
