@@ -319,23 +319,25 @@ public class RefactoringTests
         Assert.Equal("const int MAX_SIZE = 42;\nint x = 10;", result);
     }
 
-    // 4. Число зустрічається кілька разів
+    // 4. Число зустрічається кілька разів NEW
     [Fact]
     public void ReplaceMagicNumber_ReplacesAllOccurrences()
     {
         string code = "int a = 100; int b = 100; int c = 100;";
         string result = _refactoring.ReplaceMagicNumber(code, "100", "LIMIT");
-        Assert.DoesNotContain("100", result);
-        Assert.Equal(3, result.Split("LIMIT").Length - 1 - 1);
+        Assert.Equal(" LIMIT = 100; 
+                        int a = LIMIT; 
+                        int b = LIMIT; 
+                        int c = LIMIT;", result);
     }
 
-    // 5. Константа додається на початок файлу
+    // 5. Константа додається на початок файлу NEW
     [Fact]
     public void ReplaceMagicNumber_ConstantIsAtTheTop()
     {
         string code = "int x = 99;";
         string result = _refactoring.ReplaceMagicNumber(code, "99", "MAX_VAL");
-        Assert.StartsWith("const int MAX_VAL = 99;", result);
+        Assert.StartsWith("const int MAX_VAL = 99; int x = MAX_VAL", result);
     }
 
     // 6. Інше число та інша назва константи
@@ -348,41 +350,38 @@ public class RefactoringTests
         Assert.Contains("MAX_BYTE", result);
         Assert.DoesNotContain("255", result);
     }
-
-    // 7. Код з кількома рядками
-    [Fact]
-    public void ReplaceMagicNumber_MultilineCode()
+    
+    // 7. Перевірка створень зайвих констант NEW
+    public void ReplaceMagicNumber_ConstantDeclaredOnce()
     {
-        string code = "int a = 10;\nint b = 10;\nreturn 10;";
-        string result = _refactoring.ReplaceMagicNumber(code, "10", "TEN");
-        Assert.Contains("const int TEN = 10;", result);
-        Assert.DoesNotContain("= 10", result);
+    string code = "int a = 7; int b = 7;";
+    string result = _refactoring.ReplaceMagicNumber(code, "7", "DAYS_IN_WEEK");
+    int count = result.Split("const int DAYS_IN_WEEK").Length - 1;
+    Assert.Equal(1, count);
     }
 
-    // 8. Між константою та кодом є перенос рядка
-    [Fact]
-    public void ReplaceMagicNumber_HasNewlineBetweenConstantAndCode()
+    // 8. Заміна періодичного числа константою  NEW
+    public void ReplaceMagicNumber_ReplacesInSameLine()
     {
-        string code = "int x = 5;";
-        string result = _refactoring.ReplaceMagicNumber(code, "5", "FIVE");
-        Assert.Contains("\n", result);
+    string code = "int sum = 7 + 7;";
+    string result = _refactoring.ReplaceMagicNumber(code, "7", "DAYS_IN_WEEK");
+    Assert.Contains("int sum = DAYS_IN_WEEK + DAYS_IN_WEEK", result);
     }
 
-    // 9. Назва константи присутня в результаті
-    [Fact]
-    public void ReplaceMagicNumber_ResultContainsConstantName()
-    {
-        string code = "int timeout = 30;";
-        string result = _refactoring.ReplaceMagicNumber(code, "30", "TIMEOUT_SECONDS");
-        Assert.Contains("TIMEOUT_SECONDS", result);
-    }
+    // 9. Число в назві NEW             
+    public void ReplaceMagicNumber_DoesNotReplaceInsideIdentifiers()
+{
+    string code = "int x7 = 7;";
+    string result = _refactoring.ReplaceMagicNumber(code, "7", "DAYS_IN_WEEK");
+    Assert.Contains("int x7", result);
+}
 
-    // 10. Оголошення константи має правильний формат
-    [Fact]
-    public void ReplaceMagicNumber_ConstantHasCorrectFormat()
-    {
-        string code = "int x = 7;";
-        string result = _refactoring.ReplaceMagicNumber(code, "7", "DAYS_IN_WEEK");
-        Assert.StartsWith("const int DAYS_IN_WEEK = 7;", result);
-    }
+    // 10. Перевірка метода на заміну схожих чисел NEW                   
+    public void ReplaceMagicNumber_DoesNotTouchOtherNumbers()
+{
+    string code = "int a = 17; int b = 70;";
+    string result = _refactoring.ReplaceMagicNumber(code, "7", "DAYS_IN_WEEK");
+    Assert.Contains("17", result);
+    Assert.Contains("70", result);
+}
 }
